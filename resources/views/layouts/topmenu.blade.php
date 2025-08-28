@@ -2,7 +2,7 @@
     <div class="container">
         <div class="d-flex">
             <a class="header-brand" href="./index.html">
-                <img src="https://themewagon.github.io/tabler/demo/brand/tabler.svg" class="header-brand-img"
+                <img src="{{ asset('assets/img/tabler1.svg') }}" class="header-brand-img"
                     alt="tabler logo" />
             </a>
             <div class="d-flex order-lg-2 ml-auto">
@@ -37,16 +37,16 @@
             <div class="col-lg order-lg-first">
                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                     <li class="nav-item">
-                        <a href="./index.html" class="nav-link active"><i class="fa-solid fa-house"></i>
+                        <a href="/" class="nav-link active"><i class="fa-solid fa-house"></i>
                             Home</a>
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a href="./form-elements.html" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori
+                        <a href="{{ route('categories.index') }}" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori
                             Buku</a>
                     </li>
                     <li class="nav-item">
-                        <a href="./gallery.html" class="nav-link"><i class="fa-solid fa-book"></i> Buku</a>
+                        <a href="{{ route('books.index') }}" class="nav-link"><i class="fa-solid fa-book"></i> Buku</a>
                     </li>
                     <li class="nav-item">
                         <a href="./docs/index.html" class="nav-link"><i class="fa-solid fa-user-gear mr-2"></i>
