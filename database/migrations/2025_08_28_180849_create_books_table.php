@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('buku', function (Blueprint $table) {
             $table->id();
             $table->foreignId('kategori_id')->constrained('kategori_buku')->cascadeOnDelete();
             $table->string('judul');

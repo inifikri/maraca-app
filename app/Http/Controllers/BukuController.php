@@ -12,8 +12,9 @@ class BukuController extends Controller
 {
     public function index()
     {
-        $data = Buku::with('kategori')->latest()->paginate(10);
-        return view('buku.index', compact('data'));
+        $title ="Daftar Buku";
+        $data = Buku::with('kategori')->get();
+        return view('buku.index', compact('data','title'));
     }
 
     public function create()

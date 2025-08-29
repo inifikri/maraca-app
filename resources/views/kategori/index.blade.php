@@ -3,22 +3,6 @@
     <div class="row">
         <div class="col-12">
             <h1 class="page-title font-weight-bold">Kategori Buku</h1>
-            <form method="GET" action="{{ route('kategori.index') }}" class="d-flex gap-2">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input type="text" name="q" value="{{ $q ?? '' }}" class="form-control"
-                        placeholder="Cari nama kategori...">
-                </div>
-                <select name="per_page" class="form-select" onchange="this.form.submit()">
-                    @foreach ([10, 25, 50, 100] as $n)
-                        <option value="{{ $n }}" @selected($perPage == $n)>{{ $n }}/hal</option>
-                    @endforeach
-                </select>
-                <button class="btn btn-outline-secondary" type="submit">Cari</button>
-                @if (!empty($q))
-                    <a href="{{ route('kategori.index') }}" class="btn btn-outline-dark">Reset</a>
-                @endif
-            </form>
             <div class="mt-5 mb-3">
                 <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambahData">+ Tambah
                     Data</a>
@@ -39,42 +23,61 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <div class="card">
-                <div class="card-body">
-                    <table class="table table-striped align-middle mb-0">
-                        <thead>
+            <form method="GET" action="{{ route('kategori.index') }}" class="d-flex gap-2">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" name="q" value="{{ $q ?? '' }}" class="form-control"
+                        placeholder="Cari nama kategori...">
+                </div>
+                <button class="btn btn-secondary btn-sm" type="submit">Cari</button>
+                @if (!empty($q))
+                    <a class="btn btn-dark" href="{{ route('kategori.index') }}">Reset</a>
+                @endif
+            </form>
+            <div class="card mt-3">
+                {{-- <div class="card-body"> --}}
+                <table class="table table-striped align-middle mb-0 p-0">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Kategori</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($data as $i => $row)
                             <tr>
-                                <th>No</th>
-                                <th>Nama Kategori</th>
-                                <th>Aksi</th>
+                                <td>{{ $data->firstItem() + $i }}</td>
+                                <td>{{ $row->nama }}</td>
+                                <td>
+                                    <div class="button">
+                                        <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#UbahKategori{{ $row->id }}"><i
+                                                class="fa-solid fa-pencil"></i></a>
+                                        <form action="{{ route('kategori.destroy', $row->id) }}" method="post"
+                                            class="d-inline" onsubmit="return confirm('Hapus kategori buku ini?')">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-sm btn-danger"><i
+                                                    class="fa-solid fa-trash-can"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($data as $i => $row)
-                                <tr>
-                                    <td>{{ $data->firstItem() + $i }}</td>
-                                    <td>{{ $row->nama }}</td>
-                                    <td>
-                                        <div class="button">
-                                            <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#UbahKategori{{ $row->id }}"><i
-                                                    class="fa-solid fa-pencil"></i></a>
-                                            <form action="{{ route('kategori.destroy', $row->id) }}" method="post"
-                                                class="d-inline" onsubmit="return confirm('Hapus kategori buku ini?')">
-                                                @csrf @method('DELETE')
-                                                <button class="btn btn-sm btn-danger"><i
-                                                        class="fa-solid fa-trash-can"></i></button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">Belum ada data.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">Belum ada data.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+                {{-- </div> --}}
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="small text-muted">
+                    Menampilkan {{ $data->firstItem() ?? 0 }}–{{ $data->lastItem() ?? 0 }} dari {{ $data->total() }} data
+                </div>
+                <div class="d-flex justify-content-center mt-3">
+                    {{ $data->onEachSide(1)->links('vendor.pagination.numbers-only') }}
                 </div>
             </div>
         </div>

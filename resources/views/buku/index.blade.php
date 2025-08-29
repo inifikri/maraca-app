@@ -1,101 +1,92 @@
 @extends('layouts.app')
 @section('content')
-    <div class="page-header">
-        <h1 class="page-title font-weight-bold">
-            {{ $title }}
-        </h1>
-    </div>
-    <div class="row row-cards row-deck">
-        <div class="col-sm-6 col-xl-3">
-            <div class="card">
-                <a href="#"><img class="card-img-top"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRA02VX08uYi753iYkTd7ArnhSmO2uMK4kiEA&s"
-                        alt="And this isn&#39;t my nose. This is a false one." /></a>
-                <div class="card-body d-flex flex-column">
-                    <h4>
-                        <a href="#">And this isn't my nose. This is a false one.</a>
-                    </h4>
-                    <div class="text-muted">
-                        Look, my liege! The Knights Who Say Ni demand a sacrifice!
-                        …Are you suggesting that coconuts migr...
-                    </div>
-                    <div class="d-flex align-items-center pt-5 mt-auto">
-                        <div class="avatar avatar-md mr-3"
-                            style="
-                          background-image: url(./demo/faces/female/18.jpg);
-                        ">
-                        </div>
-                        <div>
-                            <a href="./profile.html" class="text-default">Rose Bradley</a>
-                            <small class="d-block text-muted">3 days ago</small>
-                        </div>
-                        <div class="ml-auto text-muted">
-                            <a href="javascript:void(0)" class="icon d-none d-md-inline-block ml-3"><i
-                                    class="fe fe-heart mr-1"></i></a>
-                        </div>
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-12">
+            <h1 class="page-title font-weight-bold">Kategori Buku</h1>
+            <div class="mt-5 mb-3">
+                <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambahData">+ Tambah
+                    Data</a>
             </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card">
-                <a href="#"><img class="card-img-top"
-                        src="https://bintangpusnas.perpusnas.go.id/api/getImage/8408_prod_20db1fd2554195f78d60545f6e1ce927.png"
-                        alt="And this isn&#39;t my nose. This is a false one." /></a>
-                <div class="card-body d-flex flex-column">
-                    <h4>
-                        <a href="#">And this isn't my nose. This is a false one.</a>
-                    </h4>
-                    <div class="text-muted">
-                        Look, my liege! The Knights Who Say Ni demand a sacrifice!
-                        …Are you suggesting that coconuts migr...
-                    </div>
-                    <div class="d-flex align-items-center pt-5 mt-auto">
-                        <div class="avatar avatar-md mr-3"
-                            style="
-                          background-image: url(./demo/faces/female/18.jpg);
-                        ">
-                        </div>
-                        <div>
-                            <a href="./profile.html" class="text-default">Rose Bradley</a>
-                            <small class="d-block text-muted">3 days ago</small>
-                        </div>
-                        <div class="ml-auto text-muted">
-                            <a href="javascript:void(0)" class="icon d-none d-md-inline-block ml-3"><i
-                                    class="fe fe-heart mr-1"></i></a>
-                        </div>
-                    </div>
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{-- ikon opsional --}}
+                    <i class="fa-solid fa-check-circle me-1"></i>
+                    {{ session('success') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
                 </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                    {{ session('error') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            <form method="GET" action="{{ route('kategori.index') }}" class="d-flex gap-2">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" name="q" value="{{ $q ?? '' }}" class="form-control"
+                        placeholder="Cari nama kategori...">
+                </div>
+                <button class="btn btn-secondary btn-sm" type="submit">Cari</button>
+                @if (!empty($q))
+                    <a class="btn btn-dark" href="{{ route('kategori.index') }}">Reset</a>
+                @endif
+            </form>
+            <div class="card mt-3">
+                {{-- <div class="card-body"> --}}
+                <table class="table table-striped align-middle mb-0 p-0">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Cover</th>
+                            <th>Judul</th>
+                            <th>Kategori</th>
+                            <th>Penulis</th>
+                            <th>Terbit</th>
+                            <th>Stok</th>
+                            <th class="text-end">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($data as $i => $row)
+          <tr>
+            <td>{{ $data->firstItem() + $i }}</td>
+            <td>
+              @if($row->cover_path)
+                <img src="{{ asset('storage/'.$row->cover_path) }}" style="width:48px;height:48px;object-fit:cover" class="rounded">
+              @else
+                <span class="text-muted">—</span>
+              @endif
+            </td>
+            <td>{{ $row->judul }}</td>
+            <td>{{ $row->kategori->nama ?? '-' }}</td>
+            <td>{{ $row->penulis ?? '-' }}</td>
+            <td>{{ $row->tahun_terbit ?? '-' }}</td>
+            <td>{{ $row->stok }}</td>
+            <td class="text-end">
+              <a href="{{ route('buku.edit',$row->id) }}" class="btn btn-sm btn-warning">Edit</a>
+              <form action="{{ route('buku.destroy',$row->id) }}" method="post" class="d-inline"
+                    onsubmit="return confirm('Hapus buku ini?')">
+                @csrf @method('DELETE')
+                <button class="btn btn-sm btn-danger">Hapus</button>
+              </form>
+            </td>
+          </tr>
+        @empty
+          <tr><td colspan="8" class="text-center text-muted">Belum ada data.</td></tr>
+        @endforelse
+                    </tbody>
+                </table>
+                {{-- </div> --}}
             </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card">
-                <a href="#"><img class="card-img-top"
-                        src="https://images-platform.99static.com//MLpNbgbuuGmM9VqX0oFAVMehwAU=/0x0:2000x2000/fit-in/500x500/99designs-contests-attachments/138/138299/attachment_138299876"
-                        alt="And this isn&#39;t my nose. This is a false one." /></a>
-                <div class="card-body d-flex flex-column">
-                    <h4>
-                        <a href="#">And this isn't my nose. This is a false one.</a>
-                    </h4>
-                    <div class="text-muted">
-                        Look, my liege! The Knights Who Say Ni demand a sacrifice!
-                        …Are you suggesting that coconuts migr...
-                    </div>
-                    <div class="d-flex align-items-center pt-5 mt-auto">
-                        <div class="avatar avatar-md mr-3"
-                            style="
-                          background-image: url(./demo/faces/female/18.jpg);
-                        ">
-                        </div>
-                        <div>
-                            <a href="./profile.html" class="text-default">Rose Bradley</a>
-                            <small class="d-block text-muted">3 days ago</small>
-                        </div>
-                        <div class="ml-auto text-muted">
-                            <a href="javascript:void(0)" class="icon d-none d-md-inline-block ml-3"><i
-                                    class="fe fe-heart mr-1"></i></a>
-                        </div>
-                    </div>
+            <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="small text-muted">
+                    Menampilkan {{ $data->firstItem() ?? 0 }}–{{ $data->lastItem() ?? 0 }} dari {{ $data->total() }} data
+                </div>
+                <div class="d-flex justify-content-center mt-3">
+                    {{ $data->onEachSide(1)->links('vendor.pagination.numbers-only') }}
                 </div>
             </div>
         </div>
